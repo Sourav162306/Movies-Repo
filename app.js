@@ -54,9 +54,7 @@ app.get("/movies/", async (request, response) => {
       movie_id;`;
   const moviesArray = await db.all(getMoviesQuery);
   response.send(
-    moviesArray.map(
-      (eachMovie) => convertDbObjectToResponseObject(eachMovie) //converting the database object to response object of eachPlayer
-    )
+    moviesArray.map((eachMovie) => convertDbObjectToResponseObject(eachMovie))
   );
 });
 
@@ -138,8 +136,8 @@ app.get("/directors/", async (request, response) => {
       director_id;`;
   const directorsArray = await db.all(getDirectorsQuery);
   response.send(
-    directorsArray.map(
-      (eachDirector) => convertDirectorObjectToResponseObject(eachDirector) //converting the database object to response object of eachPlayer
+    directorsArray.map((eachDirector) =>
+      convertDirectorObjectToResponseObject(eachDirector)
     )
   );
 });
@@ -156,9 +154,7 @@ app.get("/directors/:directorId/movies/", async (request, response) => {
       director_id = ${directorId};`;
   const moviesArray = await db.all(getDirectorMovieQuery);
   response.send(
-    moviesArray.map(
-      (eachMovie) => convertDbObjectToResponseObject(eachMovie) //converting the database object to response object of eachPlayer
-    )
+    moviesArray.map((eachMovie) => convertDbObjectToResponseObject(eachMovie))
   );
 });
 
