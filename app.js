@@ -27,6 +27,22 @@ const initializeDBAndServer = async () => {
 
 initializeDBAndServer();
 
+const convertDbObjectToResponseObject = (dbObject) => {
+  return {
+    movieId: dbObject.movie_id,
+    directorId: dbObject.director_id,
+    movieName: dbObject.movie_name,
+    leadActor: dbObject.lead_actor,
+  };
+};
+
+const convertDirectorObjectToResponseObject = (dbObject) => {
+  return {
+    directorId: dbObject.director_id,
+    directorName: dbObject.director_name,
+  };
+};
+
 //API 1
 app.get("/movies/", async (request, response) => {
   const getMoviesQuery = `
@@ -37,7 +53,11 @@ app.get("/movies/", async (request, response) => {
     ORDER BY
       movie_id;`;
   const moviesArray = await db.all(getMoviesQuery);
-  response.send(moviesArray);
+  response.send(
+    moviesArray.map(
+      (eachMovie) => convertDbObjectToResponseObject(eachMovie) //converting the database object to response object of eachPlayer
+    )
+  );
 });
 
 //API 2
@@ -59,7 +79,6 @@ app.post("/movies/", async (request, response) => {
 });
 
 //API 3
-
 app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
   const getMovieQuery = `
@@ -71,7 +90,7 @@ app.get("/movies/:movieId/", async (request, response) => {
       movie_id = ${movieId};
       `;
   const movie = await db.get(getMovieQuery);
-  response.send(movie);
+  response.send(convertDbObjectToResponseObject(movie));
 });
 
 //API 4
@@ -118,7 +137,11 @@ app.get("/directors/", async (request, response) => {
     ORDER BY
       director_id;`;
   const directorsArray = await db.all(getDirectorsQuery);
-  response.send(directorsArray);
+  response.send(
+    directorsArray.map(
+      (eachDirector) => convertDirectorObjectToResponseObject(eachDirector) //converting the database object to response object of eachPlayer
+    )
+  );
 });
 
 //API 7
@@ -132,5 +155,11 @@ app.get("/directors/:directorId/movies/", async (request, response) => {
     WHERE
       director_id = ${directorId};`;
   const moviesArray = await db.all(getDirectorMovieQuery);
-  response.send(moviesArray);
+  response.send(
+    moviesArray.map(
+      (eachMovie) => convertDbObjectToResponseObject(eachMovie) //converting the database object to response object of eachPlayer
+    )
+  );
 });
+
+module.exports = app;
